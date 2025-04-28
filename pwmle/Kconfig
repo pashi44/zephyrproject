@@ -1,0 +1,16 @@
+menu "PWMLE Module Configuration"
+
+config PWMLE_ENABLE
+    bool "Enable PWMLE module"
+    default y
+    help
+      Enable the custom PWMLE module functionality.
+
+config PWMLE_PARAMETER
+    int "Example parameter"
+    default 10
+    depends on PWMLE_ENABLE
+    help
+      Example configuration parameter for PWMLE module.
+
+endmenu
