@@ -1,0 +1,4 @@
+name: gpio
+build:
+  cmake: .
+  kconfig  :  Kconfig

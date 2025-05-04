@@ -4,6 +4,6 @@ zephyr_library()
 zephyr_include_directories(include)
 
 # Add sources conditionally
-if(CONFIG_PWMLE_ENABLE)
-  zephyr_library_sources(./first.c)
+if(CONFIG_DAC_ENABLE)
+  zephyr_library_sources(dacone.c)
 endif()

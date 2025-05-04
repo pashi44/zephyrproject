@@ -4,7 +4,10 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${ZEPHYR_BASE}/**"
+                "/home/hadoop/zephyr/zephyr/**",
+                "/home/hadoop/zephyr/zephyr/include",
+                "${workspaceFolder}/**/*",
+                "${workspaceFolder}/gpio/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",

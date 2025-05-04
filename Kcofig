@@ -1,0 +1,3 @@
+source "gpio/Kconfig"
+source "adc/Kconfig"
+source "dac/Kconfig"

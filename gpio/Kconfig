@@ -1,0 +1,17 @@
+
+menu "PWMLE Module Configuration"
+
+config GPIO_ENABLE
+    bool "Enable PWMLE module"
+    default y
+    help
+      Enable the custom GPIO module functionality.
+
+config GPIOPIN_PARAMETER
+    int "Example parameter"
+    default 2
+    depends on GPIO_ENABLE
+    help
+      Example configuration parameter for GPIO module.
+
+endmenu

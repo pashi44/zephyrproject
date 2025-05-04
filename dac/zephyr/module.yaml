@@ -1,0 +1,4 @@
+name: dacmodule
+build:
+  cmake: .
+  kconfig  :  Kconfig
