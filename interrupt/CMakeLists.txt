@@ -1,0 +1,5 @@
+zephyr_library()
+zephyr_include_directories(include)
+If(CONFIG_MANUAL_GPIO_INTRR)
+  zephyr_library_sources(gpintrr.c)
+endif()

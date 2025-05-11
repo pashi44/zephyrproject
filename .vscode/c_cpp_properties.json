@@ -3,11 +3,10 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**",
                 "/home/hadoop/zephyr/zephyr/**",
-                "/home/hadoop/zephyr/zephyr/include",
-                "${workspaceFolder}/**/*",
-                "${workspaceFolder}/gpio/include"
+                 "/home/hadoop/zephyr-sdk-0.16.1/**"
+
+
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",
