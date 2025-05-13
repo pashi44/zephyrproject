@@ -5,7 +5,6 @@
 #include <zephyr/devicetree.h>
 #include <zephyr/device.h>
 #include <zephyr/drivers/gpio.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -15,7 +14,8 @@ extern "C" {
 extern const  struct gpio_dt_spec led17;
 extern int led17_init();
 extern  void gpio_thread_entry(void *p1, void *p2, void *p3);
-
+// extern      struct   k_sem  gpio_sem;
+// extern struct k_sem   greet_sem;
 
 #endif
 

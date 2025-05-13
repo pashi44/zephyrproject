@@ -1,6 +1,6 @@
 #include "dacone.h"
 
-#ifdef __cplusplsu
+#ifdef __cplusplus
 extern "C"{
 #endif
 

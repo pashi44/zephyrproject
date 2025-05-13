@@ -7,6 +7,8 @@ set(DTC_OVERLAY_FILE ${CMAKE_CURRENT_SOURCE_DIR}/boards/espressif/esp32_common.o
 list(APPEND ZEPHYR_EXTRA_MODULES
   ${CMAKE_CURRENT_SOURCE_DIR}/gpio
   ${CMAKE_CURRENT_SOURCE_DIR}/interrupt
+  ${CMAKE_CURRENT_SOURCE_DIR}/mytimers
+
 )
 
 

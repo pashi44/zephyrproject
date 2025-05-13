@@ -1,0 +1,7 @@
+menu "Mnaul driver module kconfig "
+
+config MANUAL_DRIVER
+	bool  "enabl;e the manual   driver interrupt driver"
+	default   n
+
+endmenu

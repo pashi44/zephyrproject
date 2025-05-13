@@ -25,16 +25,16 @@
 
 
 
-    buttons {
-	    compatible = "gpio-keys";
-	    button0: button_0 {
-		    gpios = < &gpio0  17    GPIO_PULL_UP >;
-		    label = "User button";
-		};
-	};
-
+//     buttons {
+// // // 	    compatible = "gpio-keys";
+	//     button0: button_0 {
+		//     gpios = < &gpio0  17    GPIO_PULL_UP >;
+		//     label = "User button";
+		// };
+	// };
+//
 };
-
+//
 
 
 

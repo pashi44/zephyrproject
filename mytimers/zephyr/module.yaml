@@ -1,0 +1,4 @@
+name:   my-timers
+build:
+  cmake: .
+  kconfig  :  Kconfig
