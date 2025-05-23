@@ -4,9 +4,8 @@
             "name": "Linux",
             "includePath": [
                 "/home/hadoop/zephyr/zephyr/**",
-                 "/home/hadoop/zephyr-sdk-0.16.1/**"
-
-
+                "/home/hadoop/zephyr-sdk-0.16.1/**",
+                "/home/hadoop/zephyr/zephyr/include/**"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",

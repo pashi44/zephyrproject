@@ -1,6 +1,8 @@
 extern "C" {
 #include   "led17.h"
 #include   "gpintrr.h"
+
+// #include "driveOne.h"
 #include <zephyr/kernel.h>
 #include <zephyr/device.h>
 #include <zephyr/drivers/adc.h>
@@ -29,13 +31,21 @@ K_KERNEL_STACK_DEFINE(gpio_stack_area, 1024);
 
 	 while (1) {
 
-		 printk("adasdasdasd  %p \n\r", &gpio_thread_handler);
+
+		printk("adasdasdasd  %p \n\r", &gpio_thread_handler);
 
 		 printk("adasdasdasd  %p \n\r", &gpio_thread_handler_one);
 
 		 k_msleep(2000);
-	 }
 
+	[&gpio_thread_handler]{}();
+
+		}
+
+
+
+
+const struct  device* spidev =  DEVICE_DT_GET(DT_NODELABEL(spi2));
 
 return 0;
 

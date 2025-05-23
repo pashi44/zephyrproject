@@ -1,8 +1,12 @@
 {
     "files.associations": {
+        "*.dbclient-js": "javascript",
         "*.sqlbook": "sql",
         "*.ndjson": "jsonl",
-        "*.dbclient-js": "javascript",
-        "printk.h": "c"
-    }
+        "printk.h": "c",
+        "cstdint": "c",
+        "log.h": "c",
+        "text_encoding": "c"
+    },
+    "idf.pythonInstallPath": "/usr/bin/python3"
 }

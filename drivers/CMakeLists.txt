@@ -1,6 +1,8 @@
 zephyr_library()
 zephyr_include_directories(include)
-if(CONFIG_MANUAL_DRIVER)
 
-  zephyr_library_sources(drivOne.c)
+
+if(CONFIG_LED_CUSTOM)
+
+  zephyr_library_sources(driveOne.c)
 endif()

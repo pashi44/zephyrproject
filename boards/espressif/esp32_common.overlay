@@ -1,114 +1,86 @@
 / {
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+	aliases {
+
+		my-spi = &spi2;
+	    my-adc0 = &adc0;
+	    my-adc0-channel0 = &adc0_ch0;
+	    my-adc0-channel1 = &adc0_ch1;
+	    my-dac = &dac;
+	};
 
 
-    #address-cells = <1>;
-    #size-cells = <1>;
+leds{
+compatible = "gpio-leds";
+status = "okay";
 
-    aliases {
-        my-adc0 = &adc0;
-        my-adc0-channel0 = &adc0_ch0;
-        my-adc0-channel1 = &adc0_ch1;
-        my-dac = &dac;
-    };
-
-    leds {
-        compatible = "gpio-leds";
-
-        led17: led_17 {
-            gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
-            label = "Green LED 17";
-        };
-    };
+led2:led_2{
 
 
-
-
-
-
-//     buttons {
-// // // 	    compatible = "gpio-keys";
-	//     button0: button_0 {
-		//     gpios = < &gpio0  17    GPIO_PULL_UP >;
-		//     label = "User button";
-		// };
-	// };
-//
+	gpios=  <&gpio0  2  (GPIO_ACTIVE_LOW||GPIO_PULL_UP)>;
 };
-//
 
+led17:led_17{
 
+	gpios=  <&gpio0  17  (GPIO_ACTIVE_LOW  ||  GPIO_PULL_UP)>;
 
+};
 
-
-
-&adc0 {
-    compatible = "espressif,esp32-adc";
-    status = "okay";
-    #address-cells = <1>;
-    #size-cells = <0>;
-
-    adc0_ch0: channel@0 {
-        reg = <0>;
-        zephyr,gain = "ADC_GAIN_1_4";
-        zephyr,reference = "ADC_REF_INTERNAL";
-        zephyr,vref-mv = <3894>;
-        zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
-        zephyr,resolution = <12>;
-    };
-
-    adc0_ch1: channel@1 {
-
-	reg = <1>;
-        zephyr,gain = "ADC_GAIN_1_2";
-        zephyr,reference = "ADC_REF_INTERNAL";
-        zephyr,vref-mv = <3894>;
-        zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
-        zephyr,resolution = <12>;
-    };
 };
 
 
 
-&dac  {
-
-    compatible = "espressif,esp32-dac" ;
-
-    status = "okay";
-
-        #io-channel-cells = <1>; //ch 25
-
-
-	//   dac-channel-id = <0>;
-        //       dac-resolution = <8>;
 
 
 
-};
+    };
+    &spi2 {
+	status = "okay";
+	pinctrl-0 = <&spim2_default>;
+	pinctrl-names = "default";
 
-// &flash0 {
-// 	partitions {
-// 		compatible = "fixed-partitions";
-// 		#address-cells = <1>;
-// 		#size-cells = <1>;
-// 		boot_partition: partition@0 {
-// 			label = "sam-ba";
-// 			reg = <0x00000000 0x1000>;
-// 			read-only;
-// 		};
-// 		code_partition: partition@2000 {
-// 			label = "code";
-// 			reg = <0x1000 0x3a000>;
-// 			read-only;
-// 		};
-// 		/*
-// 		 * The final 16 KiB is reserved for the application.
-// 		 * Storage partition will be used by FCB/LittleFS/NVS
-// 		 * if enabled.
-// 		 */
-// 		storage_partition: partition@3c000 {
-// 			label = "storage";
-// 			reg = <0x0003c000 0x00004000>;
-// 		};
-// 	};
-// };
+	my_sensor@0 {
+	    compatible = "vendor,my-sensor";  // Replace with actual compatible string
+	    reg = <0>;                        // Chip select line (CS0)
+	    spi-max-frequency = <1000000>;    // Adjust for your sensor
+	    label = "MY_SPI_SENSOR";
 
+	    // Optional: IRQ pin or control GPIOs
+	    irq-gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>; // Optional interrupt GPIO
+	    reset-gpios = <&gpio0 17 GPIO_ACTIVE_HIGH>; // Optional reset GPIO
+	};
+    };
+
+
+    &adc0 {
+	compatible = "espressif,esp32-adc";
+	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	adc0_ch0: channel@0 {
+	    reg = <0>;
+	    zephyr,gain = "ADC_GAIN_1_4";
+	    zephyr,reference = "ADC_REF_INTERNAL";
+	    zephyr,vref-mv = <3894>;
+	    zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
+	    zephyr,resolution = <12>;
+	};
+
+	adc0_ch1: channel@1 {
+	    reg = <1>;
+	    zephyr,gain = "ADC_GAIN_1_2";
+	    zephyr,reference = "ADC_REF_INTERNAL";
+	    zephyr,vref-mv = <3894>;
+	    zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
+	    zephyr,resolution = <12>;
+	};
+    };
+
+    &dac {
+	compatible = "espressif,esp32-dac";
+	status = "okay";
+	#io-channel-cells = <1>;
+    };
