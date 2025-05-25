@@ -25,16 +25,15 @@
     };
 
     &gpio0 {
-	#address-cells = <1>;
+	    #address-cells = <1>;
 	#size-cells = <0>;
+	mynode:driveOne@1 {
+		compatible = "custom,driveOne";
 
-	driveOne@0 {
-	    compatible = "custom,driveOne";
-	    reg = <0>;
-	    status = "okay";
+		status = "okay";
+
+	    reg = <0x1>;
 	    pin = <18>;
-	    label = "DRIVE_ONE";
-	    node-label = "drive_one";
 	};
     };
 

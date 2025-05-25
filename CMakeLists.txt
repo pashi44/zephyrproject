@@ -9,7 +9,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/gpio
 ${CMAKE_CURRENT_SOURCE_DIR}/interrupt
 ${CMAKE_CURRENT_SOURCE_DIR}/mytimers
 
-${CMAKE_CURRENT_SOURCE_DIR}/drivers/gpio
+${CMAKE_CURRENT_SOURCE_DIR}/drivers/drivOne
 )
 
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})

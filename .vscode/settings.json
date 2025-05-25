@@ -14,7 +14,12 @@
         "type_traits": "c",
         "utility": "c",
         "charconv": "c",
-        "gpio.h": "c"
+        "gpio.h": "c",
+        "driveone.h": "c",
+        "kernel.h": "c"
     },
-    "idf.pythonInstallPath": "/usr/bin/python3"
+    "idf.pythonInstallPath": "/usr/bin/python3",
+    "terminal.integrated.defaultProfile.linux": "Zephyr IDE Terminal",
+    "C_Cpp.default.compileCommands": "${workspaceFolder}/.vscode/compile_commands.json",
+    "cmake.configureOnOpen": false
 }

@@ -34,8 +34,7 @@ K_KERNEL_STACK_DEFINE(gpio_stack_area, 1024);
 
 
 
-	const struct device *dev =
-	  DEVICE_DT_GET(DT_NODELABEL(drive_one));
+	const struct device *dev =DEVICE_DT_GET(DT_NODELABEL(mynode));
 if(!device_is_ready(dev)) return -ENODEV;
 else printk("forund the dev\n");
 

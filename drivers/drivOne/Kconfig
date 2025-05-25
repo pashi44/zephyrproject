@@ -1,4 +1,4 @@
 # Copyright (c) 2024 Nordic Semiconductor ASA
 # SPDX-License-Identifier: Apache-2.0
-source "zephyrproject/drivers/gpio/Kconfig.gpio_led"
+source "zephyrproject/drivers/drivOne/Kconfig.gpio_led"
 
