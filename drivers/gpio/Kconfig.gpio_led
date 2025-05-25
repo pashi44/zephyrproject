@@ -1,0 +1,4 @@
+config DRIVE_ONE
+    bool "Enable DriveOne GPIO driver"
+    default y
+    depends on GPIO

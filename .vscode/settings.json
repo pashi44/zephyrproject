@@ -6,7 +6,15 @@
         "printk.h": "c",
         "cstdint": "c",
         "log.h": "c",
-        "text_encoding": "c"
+        "text_encoding": "c",
+        "optional": "c",
+        "array": "c",
+        "functional": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c",
+        "charconv": "c",
+        "gpio.h": "c"
     },
     "idf.pythonInstallPath": "/usr/bin/python3"
 }

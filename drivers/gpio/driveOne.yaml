@@ -1,0 +1,17 @@
+
+# dts/bindings/gpio/custom,driveOne.yaml
+description: Custom GPIO driver for DriveOne
+
+compatible: "custom,driveOne"
+
+include: base.yaml
+
+properties:
+  reg:
+    required: true
+  pin:
+    type: int
+    required: true
+  label:
+    type: string
+    required: false

@@ -29,6 +29,9 @@
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(gpio_esp32, CONFIG_LOG_DEFAULT_LEVEL);
 
+
+#if define(CONFIG_DRIVE_ONE)
+
 #ifdef CONFIG_SOC_SERIES_ESP32C2
 #define out	out.val
 #define in	in.val

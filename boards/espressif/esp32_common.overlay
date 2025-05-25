@@ -3,59 +3,58 @@
 	#size-cells = <1>;
 
 	aliases {
-
-		my-spi = &spi2;
+	    my-spi = &spi2;
 	    my-adc0 = &adc0;
 	    my-adc0-channel0 = &adc0_ch0;
 	    my-adc0-channel1 = &adc0_ch1;
 	    my-dac = &dac;
 	};
 
+	leds {
+	    compatible = "gpio-leds";
+	    status = "okay";
 
-leds{
-compatible = "gpio-leds";
-status = "okay";
+	    led2: led_2 {
+		gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+	    };
 
-led2:led_2{
-
-
-	gpios=  <&gpio0  2  (GPIO_ACTIVE_LOW||GPIO_PULL_UP)>;
-};
-
-led17:led_17{
-
-	gpios=  <&gpio0  17  (GPIO_ACTIVE_LOW  ||  GPIO_PULL_UP)>;
-
-};
-
-};
-
-
-
-
-
-
+	    led17: led_17 {
+		gpios = <&gpio0 17 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+	    };
+	};
     };
+
+    &gpio0 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	driveOne@0 {
+	    compatible = "custom,driveOne";
+	    reg = <0>;
+	    status = "okay";
+	    pin = <18>;
+	    label = "DRIVE_ONE";
+	    node-label = "drive_one";
+	};
+    };
+
     &spi2 {
 	status = "okay";
 	pinctrl-0 = <&spim2_default>;
 	pinctrl-names = "default";
 
 	my_sensor@0 {
-	    compatible = "vendor,my-sensor";  // Replace with actual compatible string
+	    compatible = "vendor,my-sensor"; // Replace with actual compatible string
 	    reg = <0>;                        // Chip select line (CS0)
-	    spi-max-frequency = <1000000>;    // Adjust for your sensor
+	    spi-max-frequency = <1000000>;
 	    label = "MY_SPI_SENSOR";
 
-	    // Optional: IRQ pin or control GPIOs
-	    irq-gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>; // Optional interrupt GPIO
-	    reset-gpios = <&gpio0 17 GPIO_ACTIVE_HIGH>; // Optional reset GPIO
+	    irq-gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
+	    reset-gpios = <&gpio0 17 GPIO_ACTIVE_HIGH>;
 	};
     };
 
-
     &adc0 {
-	compatible = "espressif,esp32-adc";
 	status = "okay";
 	#address-cells = <1>;
 	#size-cells = <0>;
@@ -80,7 +79,6 @@ led17:led_17{
     };
 
     &dac {
-	compatible = "espressif,esp32-dac";
 	status = "okay";
 	#io-channel-cells = <1>;
     };
