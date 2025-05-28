@@ -1,8 +1,13 @@
-#ifndef ZEPHYR_DRIVERS_DRIVEONE_H
-#define ZEPHYR_DRIVERS_DRIVEONE_H
+#pragma once
 
-struct drive_one_config;
-// int drive_one_init( const   struct device *dev);
+#include <zephyr/device.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
+int drive_one_set(const struct device *dev, bool state);
+
+#ifdef __cplusplus
+}
 #endif
