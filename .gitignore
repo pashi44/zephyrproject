@@ -2,7 +2,8 @@ build
 build/**
 build/
 
-
+.vscode/*
+\.vscode
 ./**/Kconfig
 ./**/zephyr
 ./**/zephyr/*

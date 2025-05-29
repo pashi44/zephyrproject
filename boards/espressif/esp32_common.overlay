@@ -7,6 +7,10 @@
 	    my-adc0 = &adc0;
 	    my-adc0-channel0 = &adc0_ch0;
 	    my-adc0-channel1 = &adc0_ch1;
+
+		mydriveone =  &driveone0;
+				mydrivetwo =  &driveone1;
+
 	};
 
 	leds {
@@ -21,23 +25,42 @@
 		gpios = <&gpio0 17 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
 	    };
 	};
-    };
-    &gpio0 {
-	#address-cells = <1>;
-	#size-cells = <0>;
-status  =  "okay";
+
+
+
 	driveone0: driveone_0 {
-	    compatible = "custom,driveOne";
-	    status = "okay";
-	    gpios = <&gpio0 18 GPIO_ACTIVE_HIGH>;
+		compatible = "custom,driveOne";
+		status = "okay";
+		gpios = <&gpio0 18 GPIO_ACTIVE_HIGH>;
 	};
 
 	driveone1: driveone_1 {
-	    compatible = "custom,driveOne";
-	    status = "okay";
-	    gpios = <&gpio0 19 GPIO_ACTIVE_HIGH>;
+		compatible = "custom,driveOne";
+		status = "okay";
+		gpios = <&gpio0 19 GPIO_ACTIVE_HIGH>;
 	};
     };
+//    &gpio0 {
+//	#address-cells = <1>;
+//	#size-cells = <0>;
+//status  =  "okay";
+//	driveone0: driveone_0 {
+//	    compatible = "custom,driveOne";
+//	    status = "okay";
+//	    gpios = <&gpio0 18 GPIO_ACTIVE_HIGH>;
+//	};
+
+//	driveone1: driveone_1 {
+//	    compatible = "custom,driveOne";
+//	    status = "okay";
+//	    gpios = <&gpio0 19 GPIO_ACTIVE_HIGH>;
+//	};
+  //  };
+
+
+
+
+	
 
 
     &spi2 {
