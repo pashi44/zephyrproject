@@ -3,7 +3,7 @@
 
 description: Custom GPIO DriveOne Node
 
-compatible: "custom,driveOne"
+compatible: "custom,drivone"
 
 include: base.yaml
 
@@ -35,4 +35,3 @@ properties:
 #   label:
 #     type: string
 #     required: true
-    description: Human-readable device label

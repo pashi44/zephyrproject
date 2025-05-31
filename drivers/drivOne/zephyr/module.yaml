@@ -1,4 +1,4 @@
-name: driveOne
+name: drivOne
 build:
   cmake: .
   kconfig: Kconfig

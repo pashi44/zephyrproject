@@ -1,28 +1,28 @@
-#ifndef __DRIVEONE_H_
-#define __DRIVEONE_H_
+#ifndef ZEPHYR_DRIVEONE_H_
+#define ZEPHYR_DRIVEONE_H_
 
 #include <zephyr/device.h>
 #include <zephyr/drivers/gpio.h>
+#include <errno.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-// public apo  that has collection of function  signatures
+typedef int (*driveone_api_set_t)(const struct device *dev, int value);
+typedef int (*driveone_api_get_t)(const struct device *dev);
 
-struct gpio_api {
-	int (*get)(const struct device *dev, uint8_t *state);
-	int (*set)(const struct device *dev, uint8_t state);
+struct driveone_api {
+    driveone_api_set_t set;
+    driveone_api_get_t get;
 };
 
-// my custom driver config
-struct my_custom_driver_config {
-
-	struct gpio_dt_spec pin;
-	uint8_t instance_id;
-};
+/* Public API */
+int driveone_set(const struct device *dev, int value);
+int driveone_get(const struct device *dev);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif
+#endif /* ZEPHYR_DRIVEONE_H_ */

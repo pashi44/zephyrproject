@@ -1,0 +1,9 @@
+config DRIV_ONE
+    bool "Enable custom GPIO driveOne driver"
+    depends on GPIO
+    default y
+
+config DRIVONE_LOG_LEVEL
+    int "DrivOne driver log level"
+    default 3
+    depends on DRIV_ONE
