@@ -12,6 +12,9 @@ ${CMAKE_CURRENT_SOURCE_DIR}/interrupt
 ${CMAKE_CURRENT_SOURCE_DIR}/mytimers
 
 ${CMAKE_CURRENT_SOURCE_DIR}/drivers/drivOne
+${CMAKE_CURRENT_SOURCE_DIR}/drivers/i2c
+
+
 )
 
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
