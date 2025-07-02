@@ -1,23 +1,41 @@
-name: C/C++ CI
+name: Zephyr CI/CD (Build • Test • Flash)
 
 on:
   push:
-    branches: [ "adcdac" ]
-  pull_request:
-    branches: [ "adcdac" ]
+    branches:
+      - adc
+      - dac
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
+  zephyr:
+    runs-on: self-hosted
 
     steps:
-    - uses: actions/checkout@v4
-    - name: configure
-      run: ./configure
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Setup Zephyr (SDK + manifest)
+      uses: zephyrproject-rtos/action-zephyr-setup@v1
+      with:
+        app-path: '.'            # repo root holds the manifest (west.yml)
+        toolchains: arm-zephyr-eabi
+
+    - name: Build ADC app (on adc branch)
+      if: startsWith(github.ref, 'refs/heads/adc')
+      run: west build -b <YOUR_BOARD> adc/
+
+    - name: Build DAC app (on dac branch)
+      if: startsWith(github.ref, 'refs/heads/dac')
+      run: west build -b <YOUR_BOARD> dac/
+
+    - name: Run integration tests via Twister
+      run: west twister -T tests --integration
+
+    - name: Flash device
+      if: github.event_name == 'push'
+      run: west flash
