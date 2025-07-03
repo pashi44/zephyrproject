@@ -1,41 +1,27 @@
-name: Zephyr CI/CD (Build • Test • Flash)
+name: Build & Flash Zephyr Firmware to ESP32
 
 on:
   push:
-    branches:
-      - adc
-      - dac
+    branches: [main]
 
 jobs:
-  zephyr:
-    runs-on: self-hosted
+  build-and-flash:
+    runs-on: [self-hosted, linux]
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
 
-    - name: Setup Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'
+    - name: Set up Zephyr environment
+      run: |
+        source zephyrproject/zephyr/zephyr-env.sh
+        west update
+        west zephyr-export
 
-    - name: Setup Zephyr (SDK + manifest)
-      uses: zephyrproject-rtos/action-zephyr-setup@v1
-      with:
-        app-path: '.'            # repo root holds the manifest (west.yml)
-        toolchains: arm-zephyr-eabi
+    - name: Build Zephyr app for ESP32
+      run: |
+        west build -b esp32  /home/hadoop/zephyr/zephyr/zephyrproject --pristine
 
-    - name: Build ADC app (on adc branch)
-      if: startsWith(github.ref, 'refs/heads/adc')
-      run: west build -b <YOUR_BOARD> adc/
-
-    - name: Build DAC app (on dac branch)
-      if: startsWith(github.ref, 'refs/heads/dac')
-      run: west build -b <YOUR_BOARD> dac/
-
-    - name: Run integration tests via Twister
-      run: west twister -T tests --integration
-
-    - name: Flash device
-      if: github.event_name == 'push'
-      run: west flash
+    - name: Flash ESP32
+      run: |
+        west flash
