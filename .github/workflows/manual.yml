@@ -89,3 +89,5 @@ jobs:
       with:
         name: zephyr-firmware
         path: build
+        compression-level: 0
+        overwrite: true
