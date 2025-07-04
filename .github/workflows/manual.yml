@@ -1,11 +1,13 @@
-name: Zephyr CI Build
+name: Zephyr CI Build and Flash
 
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   build:
+    name: 🔧 Build Firmware
     runs-on: ubuntu-latest
 
     env:
@@ -13,83 +15,114 @@ jobs:
       ZEPHYR_SDK_INSTALL_DIR: /opt/zephyr-sdk
 
     steps:
-    - name: Checkout Your App
-      uses: actions/checkout@v4
+      - name: 📦 Checkout Source
+        uses: actions/checkout@v4
 
-    # 🔁 Cache pip dependencies
-    - name: Cache pip dependencies
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/pip
-        key: pip-${{ hashFiles('zephyr/scripts/requirements.txt') }}
-        restore-keys: |
-          pip-
+      - name: 💾 Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ hashFiles('zephyr/scripts/requirements.txt') }}
+          restore-keys: |
+            pip-
 
-    # 🔁 Cache west + zephyr modules
-    - name: Cache West & Zephyr Modules
-      uses: actions/cache@v4
-      with:
-        path: |
-          .west
-          modules
-          zephyr
-          tools
-        key: west-modules-${{ hashFiles('west.yml') }}
-        restore-keys: |
-          west-modules-
+      - name: 💾 Cache APT packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            /var/cache/apt/archives
+            /var/lib/apt/lists
+          key: apt-${{ runner.os }}-v1
+          restore-keys: |
+            apt-${{ runner.os }}-
 
-    # 🧰 Install host system dependencies
-    - name: Install System Dependencies
-      run: |
-        sudo apt update
-        sudo apt install -y cmake ninja-build gperf ccache dfu-util \
-          device-tree-compiler wget python3-pip python3-setuptools python3-wheel \
-          python3-dev python3-ply python3-colorama python3-click \
-          python3-yaml python3-pyelftools build-essential
+      - name: 💾 Cache Zephyr Modules & West
+        uses: actions/cache@v4
+        with:
+          path: |
+            .west
+            modules
+            zephyr
+            tools
+          key: west-${{ hashFiles('west.yml') }}
+          restore-keys: |
+            west-
 
-    # 🧱 Set up West and Python deps
-    - name: Setup West Workspace
-      run: |
-        pip3 install west
+      - name: 🧰 Install System Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y --no-install-recommends \
+            cmake ninja-build gperf ccache dfu-util \
+            device-tree-compiler wget python3-pip python3-setuptools python3-wheel \
+            python3-dev python3-ply python3-colorama python3-click \
+            python3-yaml python3-pyelftools build-essential unzip
 
-        # Only initialize west workspace if not cached
-        if [ ! -d .west ]; then
-          echo "🛠️ Initializing west workspace (local layout)"
-          west init
-        else
-          echo "✅ West workspace restored from cache"
-        fi
+      - name: ⚙️ Setup West and Python Dependencies
+        run: |
+          pip3 install west
+          if [ ! -d .west ]; then
+            echo "🛠️ Initializing west workspace"
+            west init 
+          fi
+          west update
+          west zephyr-export
+          pip3 install -r zephyr/scripts/requirements.txt
 
-        west update
-        west zephyr-export
-        pip3 install -r zephyr/scripts/requirements.txt
+      - name: 📥 Install Zephyr SDK
+        run: |
+          if [ ! -d /opt/zephyr-sdk ]; then
+            echo "⬇️ Downloading Zephyr SDK"
+            wget https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v0.16.4/zephyr-sdk-0.16.4_linux-x86_64.tar.xz
+            tar -xf zephyr-sdk-0.16.4_linux-x86_64.tar.xz
+            sudo mv zephyr-sdk-0.16.4 /opt/zephyr-sdk
+            sudo /opt/zephyr-sdk/setup.sh -t all -c
+          else
+            echo "✅ Zephyr SDK already present"
+          fi
 
-    # 📦 Install Zephyr SDK
-    - name: Install Zephyr SDK
-      run: |
-        wget https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v0.16.4/zephyr-sdk-0.16.4_linux-x86_64.tar.xz
-        tar -xf zephyr-sdk-0.16.4_linux-x86_64.tar.xz
-        sudo mv zephyr-sdk-0.16.4 /opt/zephyr-sdk
-        sudo /opt/zephyr-sdk/setup.sh -t all -c
+      - name: 🛠️ Build Firmware
+        run: |
+          BOARD=$(grep -E '^set\s*\(\s*BOARD\s+[^\s)]+\s*\)' CMakeLists.txt | sed -E 's/^set\s*\(\s*BOARD\s+([^\s)]+)\s*\).*/\1/')
+          echo "📦 Detected BOARD: $BOARD"
 
-    # 🔧 Extract board from CMakeLists.txt and build
-    - name: Extract BOARD and Build
-      run: |
-        BOARD=$(grep -E '^set\s*\(\s*BOARD\s+[^\s)]+\s*\)' CMakeLists.txt | sed -E 's/^set\s*\(\s*BOARD\s+([^\s)]+)\s*\).*/\1/')
-        echo "📦 Using detected board: $BOARD"
+          export DTC_OVERLAY_FILE=${{ github.workspace }}/boards/espressif/esp32_common.overlay
+          echo "📄 Using overlay: $DTC_OVERLAY_FILE"
 
-        export DTC_OVERLAY_FILE=${{ github.workspace }}/boards/espressif/esp32_common.overlay
-        echo "📄 Using overlay: $DTC_OVERLAY_FILE"
+          west build 
 
-        west build  -p
+      - name: ☁️ Upload Firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: zephyr-firmware
+          path: build/
+          retention-days: 2
+          overwrite: true
+          compression-level: 0
 
-    # ⬆️ Upload firmware ELF
+  flash:
+    name: 🚀 Flash to ESP32
+    needs: build
+    runs-on: [self-hosted]  # Must be a runner connected to the ESP32 via USB
 
-    - name: Upload Firmware
-      uses: actions/upload-artifact@v4
-      with:
-        name: zephyr-firmware
-        path: build/
-        retention-days : 2
-        compression-level: 0
-        overwrite: true
+    steps:
+      - name: 📥 Download Firmware Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: zephyr-firmware
+          path: firmware
+
+      - name: 📂 List Downloaded Files
+        run: ls -R firmware
+
+      - name: 🔌 Flash Using west
+        run: |
+          ELF_FILE="firmware/zephyr/zephyr.elf"
+          if [ -f "$ELF_FILE" ]; then
+            echo "✅ Found ELF file: $ELF_FILE"
+            cd firmware
+            west flash -r esp32 --skip-rebuild
+          else
+            echo "❌ zephyr.elf not found at: $ELF_FILE"
+            exit 1
+          fi
+
