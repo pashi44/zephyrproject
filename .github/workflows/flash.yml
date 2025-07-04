@@ -5,7 +5,7 @@ on:
 
 jobs:
   flash:
-    runs-on: [self-hosted, r2]
+    runs-on: [self-hosted]
 
     steps:
     - name: Checkout repo
