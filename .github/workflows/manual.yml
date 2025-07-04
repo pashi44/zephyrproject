@@ -94,7 +94,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: zephyr-firmware
-          path: build/
+          path: build
           retention-days: 2
           overwrite: true
           compression-level: 0
