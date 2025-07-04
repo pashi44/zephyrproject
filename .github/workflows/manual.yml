@@ -94,7 +94,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: zephyr-firmware
-          path: firmware
+          path: build
           retention-days: 2
           compression-level: 0
   flash:
@@ -106,10 +106,10 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: zephyr-firmware
-        path: firmware
+        path : build
 
     - name: 🔍 Show firmware contents
-      run: ls  firmware
+      run: ls  build
 
     - name: 🚀 Flash to ESP32
       run: |
