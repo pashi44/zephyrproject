@@ -5,6 +5,7 @@ on:
 
 jobs:
   flash:
+    needs: build
     runs-on: [self-hosted]
 
     steps:
@@ -15,9 +16,20 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: zephyr-firmware
+        
+    - name: Unpack and list files
+      run: |
+        mkdir -p unpacked
+        unzip zephyr-firmware.zip -d unpacked
+        ls -R unpacked
 
 
     - name: Flash ESP32 with west flash
       run: |
+        cd unpacked/build
         export WEST_FLASH_SERIAL_PORT=/dev/ttyUSB1
         west flash -d build
+
+
+        
+
