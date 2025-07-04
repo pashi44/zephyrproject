@@ -18,7 +18,6 @@ jobs:
     - name: Unpack Firmware
       run: |
         mkdir -p unpacked
-        unzip zephyr-firmware.zip -d unpacked
         ls -R unpacked
 
     - name: Flash to ESP32
