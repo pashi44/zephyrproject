@@ -12,7 +12,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: zephyr-firmware
-        path: build
+        path: ./
         merge-multiple : true
 
     - name: Unpack Firmware
