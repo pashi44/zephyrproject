@@ -88,7 +88,7 @@ jobs:
           export DTC_OVERLAY_FILE=${{ github.workspace }}/boards/espressif/esp32_common.overlay
           echo "📄 Using overlay: $DTC_OVERLAY_FILE"
 
-          west build 
+          west build -p
 
       - name: ☁️ Upload Firmware
         uses: actions/upload-artifact@v4
