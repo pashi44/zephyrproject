@@ -6,33 +6,35 @@ on:
 jobs:
   flash:
     runs-on: [self-hosted]
-steps:
-  - name: Download Firmware Artifact
-    uses: actions/download-artifact@v4
-    with:
-      name: zephyr-firmware
 
-  - name: List Contents (debug)
-    run: |
-      echo "📂 Downloaded Artifact Contents:"
-      unzip -l zephyr-firmware.zip
+    steps:
+    - name: Download Firmware Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: zephyr-firmware
 
-  - name: Unpack Firmware
-    run: |
-      mkdir -p unpacked
-      unzip zephyr-firmware.zip -d unpacked
-      ls -R unpacked
+    - name: List Contents (debug)
+      run: |
+        echo "📂 Downloaded Artifact Contents:"
+        unzip -l zephyr-firmware.zip
 
-  - name: Flash to ESP32
-    run: |
-      cd unpacked/build
+    - name: Unpack Firmware
+      run: |
+        mkdir -p unpacked
+        unzip zephyr-firmware.zip -d unpacked
+        ls -R unpacked
 
-      if [ -f zephyr/zephyr.elf ]; then
-        echo "Flashing zephyr.elf via west..."
-        west flash -r esp32 --skip-rebuild
-      else
-        echo "zephyr.elf not found!" && exit 1
-      fi
+    - name: Flash to ESP32
+      run: |
+        cd unpacked/build
+
+        if [ -f zephyr/zephyr.elf ]; then
+          echo "Flashing zephyr.elf via west..."
+          west flash -r esp32 --skip-rebuild
+        else
+          echo "zephyr.elf not found!" && exit 1
+        fi
+
 
 
         
