@@ -115,9 +115,8 @@ jobs:
          BUILD_DIR="build"
     
          if [ -f "$BUILD_DIR/zephyr/zephyr.elf" ]; then
-         echo "✅ ELF file found: $BUILD_DIR/zephyr/zephyr.elf"
-         cd "$BUILD_DIR"
-         west flash -d "$PWD"
+         echo "✅ ELF file found: $BUILD_DIR/zephyr/zephyr.elf
+         west flash 
          else
          echo "❌ zephyr.elf not found inside: $BUILD_DIR/zephyr/"
          exit 1
