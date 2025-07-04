@@ -1,23 +1,23 @@
-name: Manually Flash via West
+name: Flash Zephyr Firmware
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # Manual trigger from GitHub UI
 
 jobs:
   flash:
-    name: Flash Zephyr ELF to ESP32
     runs-on: [self-hosted, r2]
 
     steps:
-    - name: Checkout Repo
+    - name: Checkout repo
       uses: actions/checkout@v4
 
-    - name: Download Firmware Artifact
+    - name: Download zephyr build artifact
       uses: actions/download-artifact@v4
       with:
-        name: firmware
+        name: zephyr-firmware
         path: build
 
-    - name: Flash with west
+    - name: Flash ESP32 with west flash
       run: |
-        west flash
+        export WEST_FLASH_SERIAL_PORT=/dev/ttyUSB1
+        west flash -d build
