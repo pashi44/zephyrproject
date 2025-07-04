@@ -1,0 +1,70 @@
+name: Zephyr CI Build
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      ZEPHYR_TOOLCHAIN_VARIANT: zephyr
+      ZEPHYR_SDK_INSTALL_DIR: /opt/zephyr-sdk
+
+    steps:
+    - name: Checkout Your App
+      uses: actions/checkout@v4
+
+    ### 🔁 Cache pip dependencies (BEFORE install)
+    - name: Cache pip dependencies
+      uses: actions/cache@v4.2.3
+      with:
+        path: ~/.cache/pip
+        key: pip-${{ hashFiles('zephyr/scripts/requirements.txt') }}
+
+    ### 🔁 Cache west modules (BEFORE west init/update)
+    - name: Cache west modules
+      uses: actions/cache@v4.2.3
+      with:
+        path: |
+          .west
+          modules
+          zephyr
+          tools
+        key: west-modules-${{ hashFiles('west.yml') }}
+        restore-keys: |
+          west-modules-
+    - name: Install System Dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y cmake ninja-build gperf ccache dfu-util \
+          device-tree-compiler wget python3-pip python3-setuptools python3-wheel \
+          python3-dev python3-ply python3-colorama python3-click \
+          python3-yaml python3-pyelftools build-essential
+    - name: Install West + Python Deps
+      run: |
+        pip3 install west
+        west init 
+        west update
+        west zephyr-export
+        pip3 install -r zephyr/scripts/requirements.txt
+    - name: Install Zephyr SDK
+      run: |
+        wget https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v0.16.4/zephyr-sdk-0.16.4_linux-x86_64.tar.xz
+        tar -xf zephyr-sdk-0.16.4_linux-x86_64.tar.xz
+        sudo mv zephyr-sdk-0.16.4 /opt/zephyr-sdk
+        sudo /opt/zephyr-sdk/setup.sh -t all -c
+    - name: Extract BOARD and build
+      run: |
+        BOARD=$(grep -E '^set\\s*\\(\\s*BOARD\\s+[^\\s)]+\\s*\\)' CMakeLists.txt | sed -E 's/^set\\s*\\(\\s*BOARD\\s+([^\\s)]+)\\s*\\).*/\\1/')
+        echo "📦 Using detected board: $BOARD"
+        export DTC_OVERLAY_FILE=${{ github.workspace }}/boards/espressif/esp32_common.overlay
+        echo "📄 Using overlay: $DTC_OVERLAY_FILE"
+        west build -p
+    - name: Upload Firmware
+      uses: actions/upload-artifact@v4
+      with:
+        name: zephyr-firmware
+        path: build/zephyr/zephyr.elf
+
