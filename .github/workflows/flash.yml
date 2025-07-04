@@ -1,0 +1,30 @@
+name: Flash Firmware to ESP32
+
+on:
+  workflow_dispatch:  # manual trigger only
+
+jobs:
+  flash:
+    name: Flash to ESP32
+    runs-on: [self-hosted, r2]  # your local Ubuntu machine with ESP32
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Download Firmware ELF
+      uses: actions/download-artifact@v4
+      with:
+        name: firmware
+        path: firmware
+
+    - name: List firmware
+      run: ls -lh firmware/
+
+    - name: Flash using esptool
+      run: |
+        PORT=/dev/ttyUSB1
+        CHIP=esp32
+
+        esptool.py --chip $CHIP --port $PORT erase_flash
+        esptool.py --chip $CHIP --port $PORT --baud 460800 write_flash 0x10000 firmware/zephyr.elf
