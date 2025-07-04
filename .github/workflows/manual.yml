@@ -109,20 +109,18 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: zephyr-firmware
-          path: firmware
+          path: build
 
-      - name: 📂 List Downloaded Files
-        run: ls -R firmware
 
-      - name: 🔌 Flash Using west
+      - name: 🔌 Flash Firmware using west
         run: |
-          ELF_FILE="firmware/zephyr/zephyr.elf"
-          if [ -f "$ELF_FILE" ]; then
-            echo "✅ Found ELF file: $ELF_FILE"
-            cd firmware
-            west flash  --skip-rebuild
+          BUILD_DIR="build"
+
+          if [ -f "$BUILD_DIR/zephyr/zephyr.elf" ]; then
+            echo "✅ ELF file found: $BUILD_DIR/zephyr/zephyr.elf"
+            cd "$BUILD_DIR"
+            west flash -d "$PWD" -r esp32 --skip-rebuild
           else
-            echo "❌ zephyr.elf not found at: $ELF_FILE"
+            echo "❌ zephyr.elf not found inside: $BUILD_DIR/zephyr/"
             exit 1
-          fi
 
