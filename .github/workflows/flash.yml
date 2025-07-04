@@ -15,7 +15,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: zephyr-firmware
-        path: build
+        path: ./artifact
 
     - name: Flash ESP32 with west flash
       run: |
