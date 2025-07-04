@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-
+  
 jobs:
   build:
     name: 🔧 Build Firmware
@@ -35,6 +35,16 @@ jobs:
           key: apt-${{ runner.os }}-v1
           restore-keys: |
             apt-${{ runner.os }}-
+       
+      - name: 🧰 Install System Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y --no-install-recommends \
+            cmake ninja-build gperf ccache dfu-util \
+            device-tree-compiler wget python3-pip python3-setuptools python3-wheel \
+            python3-dev python3-ply python3-colorama python3-click \
+            python3-yaml python3-pyelftools build-essential unzip
+
 
       - name: 💾 Cache Zephyr Modules & West
         uses: actions/cache@v4
@@ -47,16 +57,6 @@ jobs:
           key: west-${{ hashFiles('west.yml') }}
           restore-keys: |
             west-
-
-      - name: 🧰 Install System Dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y --no-install-recommends \
-            cmake ninja-build gperf ccache dfu-util \
-            device-tree-compiler wget python3-pip python3-setuptools python3-wheel \
-            python3-dev python3-ply python3-colorama python3-click \
-            python3-yaml python3-pyelftools build-essential unzip
-
       - name: ⚙️ Setup West and Python Dependencies
         run: |
           pip3 install west
@@ -88,37 +88,40 @@ jobs:
           export DTC_OVERLAY_FILE=${{ github.workspace }}/boards/espressif/esp32_common.overlay
           echo "📄 Using overlay: $DTC_OVERLAY_FILE"
 
-          west build -p
+          west build -p 
 
       - name: ☁️ Upload Firmware
         uses: actions/upload-artifact@v4
         with:
           name: zephyr-firmware
-          path: build
+          path: firmware
           retention-days: 2
           compression-level: 0
-
   flash:
-    name: 🚀 Flash to ESP32
     needs: build
-    runs-on: [self-hosted]  # Must be a runner connected to the ESP32 via USB
+    runs-on: [self-hosted]
 
     steps:
-      - name: 📥 Download Firmware Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: zephyr-firmware
-          path: build
-      - name: 🔌 Flash Firmware using west
-        run: |
-         BUILD_DIR="build"
-    
-         if [ -f "$BUILD_DIR/zephyr/zephyr.elf" ]; then
-         echo "✅ ELF file found: $BUILD_DIR/zephyr/zephyr.elf
-         west flash -b  $BUILD
-         else
-         echo "❌ zephyr.elf not found inside: $BUILD_DIR/zephyr/"
-         exit 1
-         fi
+    - name: ⬇️ Download Firmware Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: zephyr-firmware
+        path: firmware
+
+    - name: 🔍 Show firmware contents
+      run: ls  firmware
+
+    - name: 🚀 Flash to ESP32
+      run: |
+        cd build
+        if [ -f build/zephyr/zephyr.elf ]; then
+          echo "✅ Flashing zephyr.elf to board..."
+          west flash -d build --skip-rebuild
+        else
+          echo "❌ zephyr.elf not found!" && exit 1
+        fi
+  
+
+
 
 
