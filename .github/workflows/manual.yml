@@ -96,7 +96,6 @@ jobs:
           name: zephyr-firmware
           path: build
           retention-days: 2
-          overwrite: true
           compression-level: 0
 
   flash:
@@ -116,7 +115,7 @@ jobs:
     
          if [ -f "$BUILD_DIR/zephyr/zephyr.elf" ]; then
          echo "✅ ELF file found: $BUILD_DIR/zephyr/zephyr.elf
-         west flash 
+         west flash -b  $BUILD
          else
          echo "❌ zephyr.elf not found inside: $BUILD_DIR/zephyr/"
          exit 1
