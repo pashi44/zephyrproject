@@ -120,7 +120,7 @@ jobs:
           if [ -f "$ELF_FILE" ]; then
             echo "✅ Found ELF file: $ELF_FILE"
             cd firmware
-            west flash -r esp32 --skip-rebuild
+            west flash  --skip-rebuild
           else
             echo "❌ zephyr.elf not found at: $ELF_FILE"
             exit 1
