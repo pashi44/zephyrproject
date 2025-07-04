@@ -16,12 +16,8 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: firmware
-        path: build/zephyr
+        path: build
 
     - name: Flash with west
       run: |
-        # Set the serial port manually (Zephyr doesn't auto-detect)
-        export WEST_FLASH_SERIAL_PORT=/dev/ttyUSB1
-
-        # Run west flash using the downloaded build
-        west flash -d build
+        west flash
