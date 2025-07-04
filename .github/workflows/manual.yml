@@ -81,7 +81,7 @@ jobs:
         export DTC_OVERLAY_FILE=${{ github.workspace }}/boards/espressif/esp32_common.overlay
         echo "📄 Using overlay: $DTC_OVERLAY_FILE"
 
-        west build -b $BOARD -p
+        west build  -p
 
     # ⬆️ Upload firmware ELF
     - name: Upload Firmware
