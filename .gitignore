@@ -4,6 +4,3 @@ build/
 
 .vscode/*
 \.vscode
-./**/Kconfig
-./**/zephyr
-./**/zephyr/*
