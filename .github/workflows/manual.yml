@@ -110,17 +110,17 @@ jobs:
         with:
           name: zephyr-firmware
           path: build
-
-
       - name: 🔌 Flash Firmware using west
         run: |
-          BUILD_DIR="build"
+         BUILD_DIR="build"
+    
+         if [ -f "$BUILD_DIR/zephyr/zephyr.elf" ]; then
+         echo "✅ ELF file found: $BUILD_DIR/zephyr/zephyr.elf"
+         cd "$BUILD_DIR"
+         west flash -d "$PWD" -r esp32 --skip-rebuild
+         else
+         echo "❌ zephyr.elf not found inside: $BUILD_DIR/zephyr/"
+         exit 1
+         fi
 
-          if [ -f "$BUILD_DIR/zephyr/zephyr.elf" ]; then
-            echo "✅ ELF file found: $BUILD_DIR/zephyr/zephyr.elf"
-            cd "$BUILD_DIR"
-            west flash -d "$PWD" -r esp32 --skip-rebuild
-          else
-            echo "❌ zephyr.elf not found inside: $BUILD_DIR/zephyr/"
-            exit 1
 
