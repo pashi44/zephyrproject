@@ -33,14 +33,7 @@
 	reg = <0x3ff53000 0x1000>;
 	interrupts = <0x31 0x0 0x0>;
 	interrupt-parent = <&intc>;
-	clocks = <&rtc 0x4>;
 	status = "okay";
-	clock-frequency = <I2C_BITRATE_STANDARD>; // Use symbolic constant instead of hardcoded 100
-	sda-gpios = <&gpio0 21 (GPIO_PULL_UP | GPIO_OPEN_DRAIN)>;
-	scl-gpios = <&gpio0 22 (GPIO_PULL_UP | GPIO_OPEN_DRAIN)>;
-	pinctrl-0 = <&i2c0_default>;
-	pinctrl-names = "default";
-
 	arduino_slave: arduino@55 {
 		compatible = "zephyr,i2c-device";
 		reg = <0x55>;
