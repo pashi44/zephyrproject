@@ -116,7 +116,7 @@ jobs:
         cd build
         if [ -f zephyr/zephyr.elf ]; then
           echo "✅ Flashing zephyr.elf to board..."
-          west flash -d build --skip-rebuild
+          west flash -d . --skip-rebuild
         else
           echo "❌ zephyr.elf not found!" && exit 1
         fi
