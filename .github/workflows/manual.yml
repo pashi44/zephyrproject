@@ -114,7 +114,7 @@ jobs:
     - name: 🚀 Flash to ESP32
       run: |
         cd build
-        if [ -f build/zephyr/zephyr.elf ]; then
+        if [ -f zephyr/zephyr.elf ]; then
           echo "✅ Flashing zephyr.elf to board..."
           west flash -d build --skip-rebuild
         else
