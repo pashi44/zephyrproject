@@ -5,30 +5,34 @@ on:
 
 jobs:
   flash:
-    needs: build
     runs-on: [self-hosted]
+steps:
+  - name: Download Firmware Artifact
+    uses: actions/download-artifact@v4
+    with:
+      name: zephyr-firmware
 
-    steps:
-    - name: Checkout repo
-      uses: actions/checkout@v4
+  - name: List Contents (debug)
+    run: |
+      echo "📂 Downloaded Artifact Contents:"
+      unzip -l zephyr-firmware.zip
 
-    - name: Download zephyr build artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: zephyr-firmware
-        
-    - name: Unpack and list files
-      run: |
-        mkdir -p unpacked
-        unzip zephyr-firmware.zip -d unpacked
-        ls -R unpacked
+  - name: Unpack Firmware
+    run: |
+      mkdir -p unpacked
+      unzip zephyr-firmware.zip -d unpacked
+      ls -R unpacked
 
+  - name: Flash to ESP32
+    run: |
+      cd unpacked/build
 
-    - name: Flash ESP32 with west flash
-      run: |
-        cd unpacked/build
-        export WEST_FLASH_SERIAL_PORT=/dev/ttyUSB1
-        west flash -d build
+      if [ -f zephyr/zephyr.elf ]; then
+        echo "Flashing zephyr.elf via west..."
+        west flash -r esp32 --skip-rebuild
+      else
+        echo "zephyr.elf not found!" && exit 1
+      fi
 
 
         
