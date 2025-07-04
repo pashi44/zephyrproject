@@ -12,11 +12,9 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: zephyr-firmware
+        merge-multiple : true
 
-    - name: List Contents (debug)
-      run: |
-        echo "📂 Downloaded Artifact Contents:"
-        unzip -l zephyr-firmware.zip
+   
 
     - name: Unpack Firmware
       run: |
