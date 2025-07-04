@@ -1,30 +1,27 @@
-name: Flash Firmware to ESP32
+name: Manually Flash via West
 
 on:
-  workflow_dispatch:  # manual trigger only
+  workflow_dispatch:
 
 jobs:
   flash:
-    name: Flash to ESP32
-    runs-on: [self-hosted, r2]  # your local Ubuntu machine with ESP32
+    name: Flash Zephyr ELF to ESP32
+    runs-on: [self-hosted, r2]
 
     steps:
-    - name: Checkout repo
+    - name: Checkout Repo
       uses: actions/checkout@v4
 
-    - name: Download Firmware ELF
+    - name: Download Firmware Artifact
       uses: actions/download-artifact@v4
       with:
         name: firmware
-        path: firmware
+        path: build/zephyr
 
-    - name: List firmware
-      run: ls -lh firmware/
-
-    - name: Flash using esptool
+    - name: Flash with west
       run: |
-        PORT=/dev/ttyUSB1
-        CHIP=esp32
+        # Set the serial port manually (Zephyr doesn't auto-detect)
+        export WEST_FLASH_SERIAL_PORT=/dev/ttyUSB1
 
-        esptool.py --chip $CHIP --port $PORT erase_flash
-        esptool.py --chip $CHIP --port $PORT --baud 460800 write_flash 0x10000 firmware/zephyr.elf
+        # Run west flash using the downloaded build
+        west flash -d build
