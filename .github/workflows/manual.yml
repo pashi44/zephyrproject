@@ -85,7 +85,16 @@ jobs:
           BOARD=$(grep -E '^set\s*\(\s*BOARD\s+[^\s)]+\s*\)' CMakeLists.txt | sed -E 's/^set\s*\(\s*BOARD\s+([^\s)]+)\s*\).*/\1/')
           echo "📦 Detected BOARD: $BOARD"
 
-          export DTC_OVERLAY_FILE=${{ github.workspace }}/boards/espressif/esp32_common.overlay
+          export DTC_OVERLAY_FILE=${{ github.workspace }}/boards/espr    - name: 🛠️ Rebuild CMake context (pristine)
+        run: |
+          pip3 install west
+          west init -l .
+          west update
+          west zephyr-export
+          pip3 install -r zephyr/scripts/requirements.txt
+
+          # Reconfigure build from downloaded files
+          west build -d build --pristine --board esp32 --build-dir buildessif/esp32_common.overlay
           echo "📄 Using overlay: $DTC_OVERLAY_FILE"
 
           west build -p 
@@ -108,18 +117,22 @@ jobs:
         name: zephyr-firmware
         path : build
 
-    - name: 🔍 Show firmware contents
-      run: ls  build
+    - name: 🛠️ Rebuild CMake context (pristine)
+        run: |
+          pip3 install west
+          west init -l .
+          west update
+          west zephyr-export
+          pip3 install -r zephyr/scripts/requirements.txt
 
-    - name: 🔧 Regenerate CMake config (for flash)
-      run: |
-        west build -d .  --skip-rebuild
+          # Reconfigure build from downloaded files
+          west build -d build --pristine --board esp32 --build-dir build
 
     - name: 🚀 Flash to ESP32
       run: |
         if [ -f zephyr/zephyr.elf ]; then
           echo "✅ Flashing zephyr.elf to board..."
-          west flash -d   build --skip-rebuild
+            west flash -d build --runner esptool 
         else
           echo "❌ zephyr.elf not found!" && exit 1
         fi
