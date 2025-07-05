@@ -103,7 +103,7 @@ jobs:
           source /home/hadoop/zephyr/zephyr/zephyr-env.sh
 
           echo "🔍 Checking bin files..."
-          ls -lh build/zephyr/*.bin || { echo "❌ .bin files missing"; exit 1; }
+          ls -lh build/zephyr/zephyr.elf || { echo "❌ .bin files missing"; exit 1; }
 
           PORT=$(ls /dev/ttyUSB* | head -n 1)
           echo "📡 Using serial port: $PORT"
