@@ -95,23 +95,27 @@ jobs:
         run: |
           ls -R firmware/
 
-      - name: ⚙️ Source Zephyr Environment
+      - name: Source Zephyr Env
         run: |
-          source ~/zephyr/zephyr/zephyr-env.sh
-
-      - name: 🧠 Confirm Zephyr Path Setup
-        run: |
+          source /home/hadoop/zephyr/zephyr-env.sh
           echo "ZEPHYR_BASE = $ZEPHYR_BASE"
-          echo "ZEPHYR_SDK = $ZEPHYR_SDK"
-          which west || echo "❌ west not in PATH"
-          west --version
 
-      - name: 🔥 Flash with west (esptool)
+      - name: 🛠️ Reconfigure Build Metadata
         run: |
-          cd firmware
-          PORT=$(ls /dev/ttyUSB* | head -n 1)
-          echo "📡 Using serial port: $PORT"
-          if [ ! -f zephyr/zephyr.elf ]; then
+          source /home/hadoop/zephyr/zephyr-env.sh
+          BOARD=$(grep -E '^set\s*\(\s*BOARD\s+[^\s)]+\s*\)' CMakeLists.txt | sed -E 's/^set\s*\(\s*BOARD\s+([^\s)]+)\s*\).*/\1/')
+          echo "Detected BOARD: $BOARD"
+          west build -d build --cmake-only
+
+      - name: 🚀 Flash to ESP32
+        run: |
+          source /home/hadoop/zephyr/zephyr-env.sh
+
+          if [ ! -f build/zephyr/zephyr.elf ]; then
             echo "❌ zephyr.elf not found!" && exit 1
           fi
-          west flash -d . --runner=esptool --skip-rebuild
+
+          PORT=$(ls /dev/ttyUSB* | head -n 1)
+          echo "📡 Using serial port: $PORT"
+
+          west flash -d build --skip-rebuild --runner esptool
