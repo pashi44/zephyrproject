@@ -113,14 +113,13 @@ jobs:
 
     - name: 🔧 Regenerate CMake config (for flash)
       run: |
-        cd build
         west build -d build --skip-rebuild
 
     - name: 🚀 Flash to ESP32
       run: |
         if [ -f zephyr/zephyr.elf ]; then
           echo "✅ Flashing zephyr.elf to board..."
-          west flash -d . --skip-rebuild
+          west flash -d   build --skip-rebuild
         else
           echo "❌ zephyr.elf not found!" && exit 1
         fi
