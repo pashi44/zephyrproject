@@ -69,7 +69,7 @@ jobs:
           echo "📦 Detected BOARD: $BOARD"
           export DTC_OVERLAY_FILE=${{ github.workspace }}/boards/espressif/esp32_common.overlay
           echo "📄 Using overlay: $DTC_OVERLAY_FILE"
-          west build -b $BOARD -p always
+          west build -p always
 
       - name: ☁️ Upload Firmware Artifact
         uses: actions/upload-artifact@v4
@@ -82,7 +82,7 @@ jobs:
   flash:
     name: 🚀 Flash to ESP32
     needs: build
-    runs-on: [self-hosted, linux]
+    runs-on: [self-hosted]
 
     steps:
       - name: ⬇️ Download Firmware Artifact
