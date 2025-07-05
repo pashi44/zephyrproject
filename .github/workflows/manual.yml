@@ -125,4 +125,5 @@ jobs:
           PORT=$(ls /dev/ttyUSB* | head -n 1)
           echo "📡 Using serial port: $PORT"
 
-          west flash -d build --skip-rebuild -r esp32
+          west flash -d build --skip-rebuild -r esp32 \
+          --esptool-path=/home/hadoop/.local/bin/esptool.py
