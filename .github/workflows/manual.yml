@@ -82,6 +82,7 @@ jobs:
           overwrite: true
 
   flash:
+    name: 🚀 Flash Firmware
     needs: build
     runs-on: [self-hosted]
 
@@ -90,8 +91,20 @@ jobs:
       ZEPHYR_SDK_INSTALL_DIR: /opt/zephyr-sdk
 
     steps:
-      - name: Checkout Source
+      - name: Checkout source
         uses: actions/checkout@v4
+
+      - name: 💾 Restore Zephyr Modules Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            .west
+            modules
+            zephyr
+            tools
+          key: west-modules-${{ hashFiles('west.yml') }}
+          restore-keys: |
+            west-modules-
 
       - name: Download Firmware Artifact
         uses: actions/download-artifact@v4
@@ -99,25 +112,24 @@ jobs:
           name: zephyr-firmware
           path: build
 
-      - name: Setup West & Dependencies
+      - name: Setup West & Zephyr
         run: |
-          pip3 install west --break-system-packages
-          west init 
+          pip3 install west
           west update
           west zephyr-export
           pip3 install -r zephyr/scripts/requirements.txt
 
-      - name: Rebuild Flash Context
+      - name: Rebuild Flash Context (pristine)
         run: |
           BOARD=$(grep -E '^set\s*\(\s*BOARD\s+[^\s)]+\s*\)' CMakeLists.txt | sed -E 's/^set\s*\(\s*BOARD\s+([^\s)]+)\s*\).*/\1/')
-          echo "📦 Detected board for flashing: $BOARD"
-          west build  --pristine
-          
+          echo "📦 Using board: $BOARD"
+          west build -d build --pristine --board $BOARD
+
       - name: Flash to ESP32
         run: |
           if [ -f build/zephyr/zephyr.elf ]; then
             echo "✅ Flashing to ESP32..."
-            west flash --runner esptool
+            west flash -d build --runner esptool
           else
             echo "❌ zephyr.elf not found!" && exit 1
           fi
