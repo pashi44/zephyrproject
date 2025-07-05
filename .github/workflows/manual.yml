@@ -70,13 +70,13 @@ jobs:
           BOARD=$(grep -E '^set\s*\(\s*BOARD\s+[^\s)]+\s*\)' CMakeLists.txt | sed -E 's/^set\s*\(\s*BOARD\s+([^\s)]+)\s*\).*/\1/')
           echo "📦 Using detected board: $BOARD"
           export DTC_OVERLAY_FILE=${{ github.workspace }}/boards/espressif/esp32_common.overlay
-          west build -b $BOARD --build-dir build --pristine
+          west build  --build-dir build --pristine
 
       - name: Upload Firmware
         uses: actions/upload-artifact@v4
         with:
           name: zephyr-firmware
-          path: build/
+          path: build
           retention-days: 2
           compression-level: 0
           overwrite: true
@@ -111,13 +111,13 @@ jobs:
         run: |
           BOARD=$(grep -E '^set\s*\(\s*BOARD\s+[^\s)]+\s*\)' CMakeLists.txt | sed -E 's/^set\s*\(\s*BOARD\s+([^\s)]+)\s*\).*/\1/')
           echo "📦 Detected board for flashing: $BOARD"
-          west build -d build --pristine --board $BOARD
-
+          west build  --pristine
+          
       - name: Flash to ESP32
         run: |
           if [ -f build/zephyr/zephyr.elf ]; then
             echo "✅ Flashing to ESP32..."
-            west flash -d build --runner esptool
+            west flash --runner esptool
           else
             echo "❌ zephyr.elf not found!" && exit 1
           fi
