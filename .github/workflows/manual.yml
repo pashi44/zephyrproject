@@ -97,7 +97,7 @@ jobs:
 
       - name: Source Zephyr Env
         run: |
-          source /home/hadoop/zephyr/zephyr-env.sh
+          source /home/hadoop/zephyr/zephyr/zephyr-env.sh
           echo "ZEPHYR_BASE = $ZEPHYR_BASE"
 
       - name: 🛠️ Reconfigure Build Metadata
