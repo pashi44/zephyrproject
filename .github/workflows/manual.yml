@@ -97,7 +97,7 @@ jobs:
 
       - name: ⚙️ Source Zephyr Environment
         run: |
-          source ~/zephyr/zephyr-env.sh
+          source ~/zephyr/zephyr/zephyr-env.sh
 
       - name: 🧠 Confirm Zephyr Path Setup
         run: |
