@@ -125,4 +125,4 @@ jobs:
           PORT=$(ls /dev/ttyUSB* | head -n 1)
           echo "📡 Using serial port: $PORT"
 
-          west flash -d build --skip-rebuild --runner esptool
+          west flash -d build --skip-rebuild
