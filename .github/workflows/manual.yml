@@ -109,7 +109,7 @@ jobs:
           source /home/hadoop/zephyr/zephyr/zephyr-env.sh
           BOARD=$(grep -E '^set\s*\(\s*BOARD\s+[^\s)]+\s*\)' CMakeLists.txt | sed -E 's/^set\s*\(\s*BOARD\s+([^\s)]+)\s*\).*/\1/')
           echo "Detected BOARD: $BOARD"
-          west build -d build --cmake-only
+          west build -d build --cmake-only .
 
       - name: 🚀 Flash to ESP32
         run: |
