@@ -109,7 +109,7 @@ jobs:
 
       - name: 🚀 Flash to ESP32
         run: |
-          source /home/hadoop/zephyr/zephyr-env.sh
+          source /home/hadoop/zephyr/zephyr/zephyr-env.sh
 
           if [ ! -f build/zephyr/zephyr.elf ]; then
             echo "❌ zephyr.elf not found!" && exit 1
