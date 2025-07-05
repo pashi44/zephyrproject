@@ -89,6 +89,15 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
+
+      - name: ⬇️ Download Flash Bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: zephyt-firmware
+          path:  build
+        
+      - name: 📦 Inspect Flash Bundle
+        run: ls -lh bundle/
    
       - name: 🧰 Source Zephyr Environment
         run: |
@@ -103,7 +112,7 @@ jobs:
           source /home/hadoop/zephyr/zephyr/zephyr-env.sh
 
           echo "🔍 Checking bin files..."
-          ls -lh build/zephyr/zephyr.elf || { echo "❌ .bin files missing"; exit 1; }
+          ls -lh build/zephyr/* || { echo "❌ .bin files missing"; exit 1; }
 
           PORT=$(ls /dev/ttyUSB* | head -n 1)
           echo "📡 Using serial port: $PORT"
@@ -112,4 +121,4 @@ jobs:
           esptool.py --chip esp32 --port $PORT --baud 98600 write_flash \
             0x1000 build/zephyr/bootloader.bin \
             0x8000 build/zephyr/partition-table.bin \
-          0x10000 build/zephyr/zephyr.bin
+          0x10000 build/zephyr/zephyr.elf
