@@ -5,34 +5,44 @@ on:
 
 jobs:
   flash:
+    name: 🚀 Flash to ESP32
+
     runs-on: [self-hosted]
+    
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }} 
 
     steps:
-    - name: Checkout (not mandatory, but good practice)
-      uses: actions/checkout@v4
+      - name: ⬇️ Download Firmware Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: zephyr-firmware
+          path: firmware
 
-    - name: Download Firmware Artifact ZIP
-      uses: actions/download-artifact@v4
-      with:
-        name: zephyr-firmware
-        path: artifact-zip
+      - name: 🔍 Show Downloaded Firmware
+        run: |
+          ls -R firmware/
+      - name: Source Zephyr Env
+        run: |
+          source /home/hadoop/zephyr/zephyr/zephyr-env.sh
+          echo "ZEPHYR_BASE = $ZEPHYR_BASE"
+      # - name: 🛠️ Reconfigure Build Metadata
+      #   run: |
+      #     cd ${{ github.workspace }}
+      #     source /home/hadoop/zephyr/zephyr/zephyr-env.sh
+      #     BOARD=$(grep -E '^set\s*\(\s*BOARD\s+[^\s)]+\s*\)' CMakeLists.txt | sed -E 's/^set\s*\(\s*BOARD\s+([^\s)]+)\s*\).*/\1/')
+      #     echo "Detected BOARD: $BOARD"
+      #     west build -d build  --cmake-only .
 
-    - name: Unpack ZIP to Folder
-      run: |
-        mkdir -p unpacked
-        unzip artifact-zip/zephyr-firmware.zip -d unpacked
-        echo "📂 Listing unpacked files:"
-        ls -R unpacked
-
-    - name: Flash to ESP32
-      run: |
-        ELF_FILE="unpacked/zephyr/zephyr.elf"
-
-        if [ -f "$ELF_FILE" ]; then
-          echo "✅ Found $ELF_FILE"
-          cd unpacked
-          west flash -r esp32 --skip-rebuild
-        else
-          echo "❌ zephyr.elf not found at expected path: $ELF_FILE"
-          exit 1
-        fi
+      - name: 🚀 Flash to ESP32
+        run: |
+          cd ${{ github.workspace }}
+          sudo apt install esptool.py
+          source /home/hadoop/zephyr/zephyr/zephyr-env.sh
+          if [ ! -f build/zephyr/zephyr.elf ]; then
+            echo "❌ zephyr.elf not found!" && exit 1
+          fi
+          PORT=$(ls /dev/ttyUSB* | head -n 1)
+          echo "📡 Using serial port: $PORT"
+          west flash -d build --skip-rebuild -r esp32
