@@ -111,13 +111,15 @@ jobs:
         run: |
           source /home/hadoop/zephyr/zephyr/zephyr-env.sh
 
-         
+          # Check expected files
+          if [ ! -f build/zephyr/zephyr.elf ]; then
+          echo "❌ zephyr.elf not found!" && exit 1
+          fi
 
           PORT=$(ls /dev/ttyUSB* | head -n 1)
           echo "📡 Using serial port: $PORT"
+          west flash   --skip-rebuild --runner esptool
 
 
-          esptool.py --chip esp32 --port $PORT --baud 98600 write_flash \
-            0x1000 build/zephyr/bootloader.bin \
-            0x8000 build/zephyr/partition-table.bin \
-          0x10000 build/zephyr/zephyr.elf
+
+          
