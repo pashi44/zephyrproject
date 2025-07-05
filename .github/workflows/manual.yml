@@ -86,9 +86,6 @@ jobs:
     needs: build
     runs-on: [self-hosted]
 
-    env:
-      ZEPHYR_TOOLCHAIN_VARIANT: zephyr
-      ZEPHYR_SDK_INSTALL_DIR: /opt/zephyr-sdk
 
     steps:
       - name: Checkout source
@@ -112,18 +109,11 @@ jobs:
           name: zephyr-firmware
           path: build
 
-      - name: Setup West & Zephyr
-        run: |
-          pip3 install west
-          west update
-          west zephyr-export
-          pip3 install -r zephyr/scripts/requirements.txt
-
       - name: Rebuild Flash Context (pristine)
         run: |
           BOARD=$(grep -E '^set\s*\(\s*BOARD\s+[^\s)]+\s*\)' CMakeLists.txt | sed -E 's/^set\s*\(\s*BOARD\s+([^\s)]+)\s*\).*/\1/')
           echo "📦 Using board: $BOARD"
-          west build -d build --pristine --board $BOARD
+          west build -d build --pristine 
 
       - name: Flash to ESP32
         run: |
