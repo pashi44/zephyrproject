@@ -93,7 +93,7 @@ jobs:
       - name: ⬇️ Download Flash Bundle
         uses: actions/download-artifact@v4
         with:
-          name: zephyt-firmware
+          name: zephyr-firmware
           path:  build
         
       - name: 📦 Inspect Flash Bundle
