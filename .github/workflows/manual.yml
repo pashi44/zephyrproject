@@ -113,7 +113,7 @@ jobs:
 
     - name: 🔧 Regenerate CMake config (for flash)
       run: |
-        west build -d build --skip-rebuild
+        west build -d .  --skip-rebuild
 
     - name: 🚀 Flash to ESP32
       run: |
