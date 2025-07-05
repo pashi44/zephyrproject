@@ -106,6 +106,13 @@ jobs:
           echo "ZEPHYR_BASE: $ZEPHYR_BASE"
           echo "ZEPHYR_SDK: $ZEPHYR_SDK"
           echo "PATH: $PATH"
+      - name: 🛠️ Regenerate Flash Metadata
+        run: |
+          source /home/hadoop/zephyr/zephyr/zephyr-env.sh
+          BOARD=$(grep -E '^set\s*\(\s*BOARD\s+[^\s)]+\s*\)' CMakeLists.txt | sed -E 's/^set\s*\(\s*BOARD\s+([^\s)]+)\s*\).*/\1/')
+          echo "Detected BOARD: $BOARD"
+
+          west build -d build --cmake-only --board $BOARD
 
       - name: 🚀 Flash with esptool.py
         run: |
