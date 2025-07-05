@@ -111,9 +111,13 @@ jobs:
     - name: 🔍 Show firmware contents
       run: ls  build
 
-    - name: 🚀 Flash to ESP32
+    - name: 🔧 Regenerate CMake config (for flash)
       run: |
         cd build
+        west build -d build --skip-rebuild
+
+    - name: 🚀 Flash to ESP32
+      run: |
         if [ -f zephyr/zephyr.elf ]; then
           echo "✅ Flashing zephyr.elf to board..."
           west flash -d . --skip-rebuild
