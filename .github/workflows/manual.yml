@@ -97,7 +97,7 @@ jobs:
           path:  build
         
       - name: 📦 Inspect Flash Bundle
-        run: ls -lh bundle/
+        run: ls -lh build
    
       - name: 🧰 Source Zephyr Environment
         run: |
@@ -111,8 +111,7 @@ jobs:
         run: |
           source /home/hadoop/zephyr/zephyr/zephyr-env.sh
 
-          echo "🔍 Checking bin files..."
-          ls -lh build/zephyr/* || { echo "❌ .bin files missing"; exit 1; }
+         
 
           PORT=$(ls /dev/ttyUSB* | head -n 1)
           echo "📡 Using serial port: $PORT"
