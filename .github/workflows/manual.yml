@@ -101,7 +101,7 @@ jobs:
 
       - name: Setup West & Dependencies
         run: |
-          pip3 install west
+          pip3 install west --break-system-packages
           west init 
           west update
           west zephyr-export
