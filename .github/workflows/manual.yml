@@ -85,41 +85,31 @@ jobs:
     name: 🚀 Flash Firmware
     needs: build
     runs-on: [self-hosted]
-
-
+    
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
-
-      - name: 💾 Restore Zephyr Modules Cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            .west
-            modules
-            zephyr
-            tools
-          key: west-modules-${{ hashFiles('west.yml') }}
-          restore-keys: |
-            west-modules-
-
-      - name: Download Firmware Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: zephyr-firmware
-          path: build
-
-      - name: Rebuild Flash Context (pristine)
+   
+      - name: 🧰 Source Zephyr Environment
         run: |
-          BOARD=$(grep -E '^set\s*\(\s*BOARD\s+[^\s)]+\s*\)' CMakeLists.txt | sed -E 's/^set\s*\(\s*BOARD\s+([^\s)]+)\s*\).*/\1/')
-          echo "📦 Using board: $BOARD"
-          west build -d build --pristine 
+          echo "📡 Sourcing Zephyr environment..."
+          source /home/hadoop/zephyr/zephyr/zephyr-env.sh
+          echo "ZEPHYR_BASE: $ZEPHYR_BASE"
+          echo "ZEPHYR_SDK: $ZEPHYR_SDK"
+          echo "PATH: $PATH"
 
-      - name: Flash to ESP32
+      - name: 🚀 Flash with esptool.py
         run: |
-          if [ -f build/zephyr/zephyr.elf ]; then
-            echo "✅ Flashing to ESP32..."
-            west flash -d build --runner esptool
-          else
-            echo "❌ zephyr.elf not found!" && exit 1
-          fi
+          source /home/hadoop/zephyr/zephyr/zephyr-env.sh
+
+          echo "🔍 Checking bin files..."
+          ls -lh build/zephyr/*.bin || { echo "❌ .bin files missing"; exit 1; }
+
+          PORT=$(ls /dev/ttyUSB* | head -n 1)
+          echo "📡 Using serial port: $PORT"
+
+
+          esptool.py --chip esp32 --port $PORT --baud 98600 write_flash \
+            0x1000 build/zephyr/bootloader.bin \
+            0x8000 build/zephyr/partition-table.bin \
+          0x10000 build/zephyr/zephyr.bin
