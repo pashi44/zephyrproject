@@ -1,8 +1,9 @@
-name: Zephyr CI Build
+name: Zephyr CI Build and Flash
 
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -13,79 +14,74 @@ jobs:
       ZEPHYR_SDK_INSTALL_DIR: /opt/zephyr-sdk
 
     steps:
-    - name: Checkout Your App
-      uses: actions/checkout@v4
+      - name: Checkout Your App
+        uses: actions/checkout@v4
 
-    # 🔁 Cache pip dependencies
-    - name: Cache pip dependencies
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/pip
-        key: pip-${{ hashFiles('zephyr/scripts/requirements.txt') }}
-        restore-keys: |
-          pip-
-    # 🔁 Cache west + zephyr modules
-    - name: Cache West & Zephyr Modules
-      uses: actions/cache@v4
-      with:
-        path: |
-          .west
-          modules
-          zephyr
-          tools
-        key: west-modules-${{ hashFiles('west.yml') }}
-        restore-keys: |
-          west-modules-
-    # 🧰 Install host system dependencies
-    - name: Install System Dependencies
-      run: |
-        sudo apt update
-        sudo apt install -y cmake ninja-build gperf ccache dfu-util \
-          device-tree-compiler wget python3-pip python3-setuptools python3-wheel \
-          python3-dev python3-ply python3-colorama python3-click \
-          python3-yaml python3-pyelftools build-essential
-    # 🧱 Set up West and Python deps
-    - name: Setup West Workspace
-      run: |
-        pip3 install west
-        # Only initialize west workspace if not cached
-        if [ ! -d .west ]; then
-          echo "🛠️ Initializing west workspace (local layout)"
-          west init
-        else
-          echo "✅ West workspace restored from cache"
-        fi
-        west update
-        west zephyr-export
-        pip3 install -r zephyr/scripts/requirements.txt
-    # 📦 Install Zephyr SDK
-    - name: Install Zephyr SDK
-      run: |
-        wget https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v0.16.4/zephyr-sdk-0.16.4_linux-x86_64.tar.xz
-        tar -xf zephyr-sdk-0.16.4_linux-x86_64.tar.xz
-        sudo mv zephyr-sdk-0.16.4 /opt/zephyr-sdk
-        sudo /opt/zephyr-sdk/setup.sh -t all -c
-    # 🔧 Extract board from CMakeLists.txt and build
-    - name: Extract BOARD and Build
-      run: |
-        BOARD=$(grep -E '^set\s*\(\s*BOARD\s+[^\s)]+\s*\)' CMakeLists.txt | sed -E 's/^set\s*\(\s*BOARD\s+([^\s)]+)\s*\).*/\1/')
-        echo "📦 Using detected board: $BOARD"
-        export DTC_OVERLAY_FILE=${{ github.workspace }}/boards/espressif/esp32_common.overlay
-        echo "📄 Using overlay: $DTC_OVERLAY_FILE"
-        west build  -p
-    # ⬆️ Upload firmware ELF
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ hashFiles('zephyr/scripts/requirements.txt') }}
+          restore-keys: |
+            pip-
 
-    - name: Upload Firmware
-      uses: actions/upload-artifact@v4
-      with:
-        name: zephyr-firmware
-        path: build/
-        retention-days : 2
-        compression-level: 0
-        overwrite: true
+      - name: Cache West & Zephyr Modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            .west
+            modules
+            zephyr
+            tools
+          key: west-modules-${{ hashFiles('west.yml') }}
+          restore-keys: |
+            west-modules-
+
+      - name: Install System Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y cmake ninja-build gperf ccache dfu-util \
+            device-tree-compiler wget python3-pip python3-setuptools python3-wheel \
+            python3-dev python3-ply python3-colorama python3-click \
+            python3-yaml python3-pyelftools build-essential
+
+      - name: Setup West Workspace
+        run: |
+          pip3 install west
+          if [ ! -d .west ]; then
+            echo "🛠️ Initializing west workspace"
+            west init -l .
+          else
+            echo "✅ West workspace restored from cache"
+          fi
+          west update
+          west zephyr-export
+          pip3 install -r zephyr/scripts/requirements.txt
+
+      - name: Install Zephyr SDK
+        run: |
+          wget https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v0.16.4/zephyr-sdk-0.16.4_linux-x86_64.tar.xz
+          tar -xf zephyr-sdk-0.16.4_linux-x86_64.tar.xz
+          sudo mv zephyr-sdk-0.16.4 /opt/zephyr-sdk
+          sudo /opt/zephyr-sdk/setup.sh -t all -c
+
+      - name: Extract BOARD and Build
+        run: |
+          BOARD=$(grep -E '^set\s*\(\s*BOARD\s+[^\s)]+\s*\)' CMakeLists.txt | sed -E 's/^set\s*\(\s*BOARD\s+([^\s)]+)\s*\).*/\1/')
+          echo "📦 Using detected board: $BOARD"
+          export DTC_OVERLAY_FILE=${{ github.workspace }}/boards/espressif/esp32_common.overlay
+          west build -b $BOARD --build-dir build --pristine
+
+      - name: Upload Firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: zephyr-firmware
+          path: build/
+          retention-days: 2
+          compression-level: 0
+          overwrite: true
 
   flash:
-    name: 🚀 Flash to ESP32
     needs: build
     runs-on: [self-hosted]
 
@@ -94,37 +90,16 @@ jobs:
       ZEPHYR_SDK_INSTALL_DIR: /opt/zephyr-sdk
 
     steps:
-      - name: 📦 Checkout Source
+      - name: Checkout Source
         uses: actions/checkout@v4
 
-      # Reuse same caches on self-hosted runner
-      - name: 💾 Cache pip dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: pip-${{ hashFiles('zephyr/scripts/requirements.txt') }}
-          restore-keys: |
-            pip-
-
-      - name: 💾 Cache Zephyr Modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            .west
-            modules
-            zephyr
-            tools
-          key: west-${{ hashFiles('west.yml') }}
-          restore-keys: |
-            west-
-
-      - name: ⬇️ Download Firmware Artifact
+      - name: Download Firmware Artifact
         uses: actions/download-artifact@v4
         with:
           name: zephyr-firmware
           path: build
 
-      - name: 🧰 Setup West & Dependencies
+      - name: Setup West & Dependencies
         run: |
           pip3 install west
           west init 
@@ -132,15 +107,17 @@ jobs:
           west zephyr-export
           pip3 install -r zephyr/scripts/requirements.txt
 
-      - name: 🛠️ Rebuild Flash Context
+      - name: Rebuild Flash Context
         run: |
-          west build -d build --pristine --board esp32
+          BOARD=$(grep -E '^set\s*\(\s*BOARD\s+[^\s)]+\s*\)' CMakeLists.txt | sed -E 's/^set\s*\(\s*BOARD\s+([^\s)]+)\s*\).*/\1/')
+          echo "📦 Detected board for flashing: $BOARD"
+          west build -d build --pristine --board $BOARD
 
-      - name: 🚀 Flash to ESP32
+      - name: Flash to ESP32
         run: |
           if [ -f build/zephyr/zephyr.elf ]; then
             echo "✅ Flashing to ESP32..."
-            west flash -d build --runner esptool 
+            west flash -d build --runner esptool
           else
             echo "❌ zephyr.elf not found!" && exit 1
           fi
