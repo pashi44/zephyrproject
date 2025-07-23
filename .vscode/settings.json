@@ -1,0 +1,13 @@
+{
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": ".*\\.*$",
+        "isAsync": true      }
+    ]
+  },
+  "C_Cpp.errorSquiggles": "disabled",
+  "cmake.configureOnOpen": false,
+ "cmake.buildBeforeRun": false,
+"cmake.saveBeforeBuild": false
+}

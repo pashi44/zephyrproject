@@ -1,0 +1,4 @@
+name : interrmodeule
+build:
+  cmake: .
+  kconfig: Kconfig

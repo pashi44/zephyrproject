@@ -1,0 +1,8 @@
+menu "manual kconfi"
+config   MANUAL_XTAL_TIMER
+bool "the value for manual timer config"
+default n
+
+
+
+endmenu

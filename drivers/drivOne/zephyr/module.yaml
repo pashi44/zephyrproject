@@ -1,0 +1,4 @@
+name: drivOne
+build:
+  cmake: .
+  kconfig: Kconfig

@@ -1,0 +1,88 @@
+/ {
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+	chosen {
+		zephyr,console = &uart0;
+	};
+
+	aliases {
+		my-spi = &spi2;
+		my-adc0 = &adc0;
+		my-adc0-channel0 = &adc0_ch0;
+		my-adc0-channel1 = &adc0_ch1;
+		    my-i2c-dev = &arduino_slave;
+
+	};
+
+	driveone0: driveone_0 {
+		compatible = "custom,drivone";
+		status = "okay";
+		gpios = <&gpio0 18 GPIO_ACTIVE_HIGH>;
+	};
+
+	driveone1: driveone_1 {
+		compatible = "custom,drivone";
+		status = "okay";
+		gpios = <&gpio0 19 GPIO_ACTIVE_HIGH>;
+	};
+};
+
+&i2c0 {
+	compatible = "espressif,esp32-i2c";
+	reg = <0x3ff53000 0x1000>;
+	interrupts = <0x31 0x0 0x0>;
+	interrupt-parent = <&intc>;
+	status = "okay";
+	arduino_slave: arduino@55 {
+		compatible = "zephyr,i2c-device";
+		reg = <0x55>;
+		label = "ARDUINO_I2C_SLAVE";
+	};
+};
+
+
+&spi2 {
+	status = "okay";
+	pinctrl-0 = <&spim2_default>;
+	pinctrl-names = "default";
+
+	my_sensor@0 {
+		compatible = "vendor,my-sensor"; // Replace with actual driver-compatible string
+		reg = <0>;                        // Chip select index
+		spi-max-frequency = <1000000>;
+		label = "MY_SPI_SENSOR";
+
+		irq-gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
+		reset-gpios = <&gpio0 17 GPIO_ACTIVE_HIGH>;
+	};
+};
+
+&adc0 {
+	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	adc0_ch0: channel@0 {
+		reg = <0>;
+		zephyr,gain = "ADC_GAIN_1_4";
+		zephyr,reference = "ADC_REF_INTERNAL";
+		zephyr,vref-mv = <3894>;
+		zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
+		zephyr,resolution = <12>;
+	};
+
+	adc0_ch1: channel@1 {
+		reg = <1>;
+		zephyr,gain = "ADC_GAIN_1_2";
+		zephyr,reference = "ADC_REF_INTERNAL";
+		zephyr,vref-mv = <3894>;
+		zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
+		zephyr,resolution = <12>;
+	};
+};
+
+&dac {
+	status = "okay";
+	#io-channel-cells = <1>;
+};

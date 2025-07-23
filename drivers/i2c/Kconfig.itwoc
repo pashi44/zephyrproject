@@ -1,0 +1,4 @@
+config GPIO_ITWOC
+    bool "Enable custom GPIO driveOne driver"
+    default y
+

@@ -1,0 +1,9 @@
+menu "DAC  module kconfig "
+
+config DAC_ENABLE
+	bool "enable the dac driver"
+	default   n
+
+
+
+endmenu

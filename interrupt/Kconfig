@@ -1,0 +1,7 @@
+menu "Mnaul intrerrupt module kconfig "
+
+config MANUAL_GPIO_INTRR
+	bool  "enabl;e the manual gpio interrupt driver"
+	default   y
+
+endmenu
