@@ -1,6 +1,6 @@
 #include  <iostream>
 #include <memory>
-
+#include "BlueOne.hpp"
 
 #ifdef __cplusplus
 extern "C" {
@@ -12,16 +12,12 @@ using namespace std;
 
 
 int main(){
-  
-  
 
-  std::shared_ptr<void>  voisptr = 
-  
-  
-   std::make_shared<std::string>("asds");
-  cout <<  "from here " << endl;
-  
-return   0;
+
+
+
+
+
 
 }
 
