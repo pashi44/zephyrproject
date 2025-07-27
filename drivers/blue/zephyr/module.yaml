@@ -1,0 +1,4 @@
+name: blue
+build:
+  cmake: .
+  kconfig: Kconfig
