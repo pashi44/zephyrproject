@@ -1,4 +1,4 @@
 config BLUE
-    bool "Enable  manual bluetooth  driver"
-    default n
+	bool "Enable  manual bluetooth  driver"
+	default n
 

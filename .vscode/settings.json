@@ -10,5 +10,9 @@
   "cmake.configureOnOpen": false,
  "cmake.buildBeforeRun": false,
 "cmake.saveBeforeBuild": false,
-"idf.pythonInstallPath": "/usr/bin/python3"
+"idf.pythonInstallPath": "/usr/bin/python3",
+"files.associations": {
+  "*.dbclient-js": "javascript",
+  "memory": "cpp"
+}
 }
