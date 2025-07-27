@@ -20,5 +20,4 @@ BlueOne::~BlueOne(){}
 void BlueOne::getSomething(){
 
 printk("thi  sum mebr gonnahurt kuke am");
-
 }

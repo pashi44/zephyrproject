@@ -5,15 +5,21 @@
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(main, LOG_LEVEL_DBG);
 
-
+#include <memory>
 #include <zephyr/kernel.h>
 using namespace std;
 using namespace app::drivers::blue;
 void cpp_main() {
-    BlueOne bk;
-    bk.getSomething();
 
-    while (true) {
+std::unique_ptr<BlueOne>  make = make_unique<BlueOne>();
+
+make->getSomething();
+
+
+
+
+
+	while (true) {
 k_sleep(K_SECONDS(2));
 
 }
