@@ -1,12 +1,8 @@
-source "gpio/Kconfig"
-source "adc/Kconfig"
-source "dac/Kconfig"
-source  "mytimers/Kconfig"
-source   "drivers/drivOne/Kconfig"
-source   "drivers/drivOne/Kconfig.drivone"
-<<<<<<< HEAD:Kconfig
-source   "drivers/drivOne/Kconfig.itwoc"
-=======
-source   "drivers/i2c/Kconfig.itwoc"
->>>>>>> pashi44-patch-2:Kcofig
-source   "drivers/blue/Kconfig.blue"
+source   "Kconfig.zephyr"
+rsource "gpio/Kconfig"
+rsource "dac/Kconfig"
+rsource  "mytimers/Kconfig"
+rsource   "drivers/drivOne/Kconfig"
+rsource   "drivers/drivOne/Kconfig.drivone"
+rsource   "drivers/i2c/Kconfig.itwoc"
+rsource   "drivers/blue/Kconfig.blue"

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20.0)
-
+set(KCONFIG_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/Kconfig)
 
 
 set(BOARD esp32_devkitc/esp32/procpu)

@@ -2,12 +2,13 @@
 
 
 #include "BlueOne.hpp"
-LOG_MODULE_REGISTER(blue, LOG_LEVEL_DBG);
 
 #include <stdio.h>
 #include  <zephyr/kernel.h>
 #include <cstdio>
 #include     <zephyr/logging/log.h>
+LOG_MODULE_REGISTER(blue, LOG_LEVEL_DBG);
+
 
 
 using namespace std;

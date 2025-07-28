@@ -1,8 +1,0 @@
-source "gpio/Kconfig"
-source "adc/Kconfig"
-source "dac/Kconfig"
-source  "mytimers/Kconfig"
-source   "drivers/drivOne/Kconfig"
-source   "drivers/drivOne/Kconfig.drivone"
-source   "drivers/i2c/Kconfig.itwoc"
-source   "drivers/blue/Kconfig.blue"
