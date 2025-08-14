@@ -1,0 +1,17 @@
+&spi2 {
+    status = "okay";
+     #address-cells = <1>;
+    #size-cells = <0>;
+
+    pinctrl-0 = <&spim2_default>;
+    pinctrl-names = "default";
+
+    my_sensor@0 {
+        compatible = "vendor,my-sensor";
+        reg = <0>;
+        // spi-max-frequency = <1000000>;
+        label = "MY_SPI_SENSOR";
+        irq-gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
+        reset-gpios = <&gpio0 17 GPIO_ACTIVE_HIGH>;
+    };
+};

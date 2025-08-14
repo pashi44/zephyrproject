@@ -10,8 +10,15 @@ properties:
 
   ngpios:
     type: int
-    required: true
     description: Number of GPIOs exposed by the expander
+    required: true
+
+  clock_frequency:
+    type: int
+    description: "sI2C clock frequency in Hz"
+    required: false
+
+
 
 gpio-cells:
   - pin

@@ -1,4 +1,4 @@
-identifier: esp32_devkitc/esp32/procpu
+identifier: my_esp32/esp32/procpu
 name: ESP32-DevkitC PROCPU
 type: mcu
 arch: xtensa

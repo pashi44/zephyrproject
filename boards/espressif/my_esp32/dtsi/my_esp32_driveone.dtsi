@@ -1,0 +1,19 @@
+/dts-v1/;
+
+driveone0:driveone_0
+
+{
+	 compatible = "custom,drivone";
+	 status = "okay";
+	 gpios = <&gpio0 18 GPIO_ACTIVE_HIGH>;
+	};
+
+
+
+ driveone1: driveone_1 {
+		compatible = "custom,drivone";
+		 status = "okay";
+ gpios = <&gpio0 19 GPIO_ACTIVE_HIGH>;
+
+};
+

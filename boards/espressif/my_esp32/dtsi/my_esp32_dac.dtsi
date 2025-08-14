@@ -1,0 +1,6 @@
+&dac
+{
+	 status = "okay";
+	 #io-channel-cells = <1>;
+	};
+

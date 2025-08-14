@@ -17,6 +17,7 @@ struct gpio_i2c_config {
     const struct device *i2c_bus;
     uint16_t i2c_addr;    // 7-bit I2C address
     int ngpios;
+    int freq;
 };
 
 struct gpio_i2c_data {

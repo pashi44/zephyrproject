@@ -3,8 +3,8 @@ set(KCONFIG_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/Kconfig)
 
 set(BOARD_ROOT ${CMAKE_CURRENT_LIST_DIR})  # <— discover boards/*
 
-# set(BOARD esp32_devkitc/esp32/procpu)
-# set(DTC_OVERLAY_FILE ${CMAKE_CURRENT_SOURCE_DIR}/boards/espressif/esp32/esp32_common.overlay)
+set(BOARD my_esp32/esp32/procpu)
+# set(DTC_OVERLAY_FILE ${CMAKE_CURRENT_LIST_DIR}/boards/espressif/esp32/my_esp32_procpu.overlay)
 set(CMAKE_CXX_STANDARD  17)
 set(CMAKE_CXX_STANDARD_REQUIRED  ON)
 list(APPEND ZEPHYR_EXTRA_MODULES

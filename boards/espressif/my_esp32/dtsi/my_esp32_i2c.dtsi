@@ -1,0 +1,15 @@
+&i2c0 {
+    compatible = "espressif,esp32-i2c";
+    status = "okay";
+    reg = <0x3ff53000 0x1000>;
+    interrupts = <0x31 0x0 0x0>;
+    interrupt-parent = <&intc>;
+
+    pinctrl-0 = <&i2c0_default>;
+    pinctrl-names = "default";
+
+    sda-gpios = <&gpio0 21 GPIO_OPEN_DRAIN>;
+    scl-gpios = <&gpio0 22 GPIO_OPEN_DRAIN>;
+
+ //   clock_frequency = <400000>;  /* I2C bus speed: 400 kHz */
+};
