@@ -1,0 +1,30 @@
+/*
+ * Copyright (c) 2023-2025 Espressif Systems (Shanghai) Co., Ltd.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+/dts-v1/;
+
+#include <espressif/esp32/esp32_wrover_e_n4r8.dtsi>
+#include "my_esp32-pinctrl.dtsi"
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+#include <zephyr/dt-bindings/input/esp32-touch-sensor-input.h>
+#include <espressif/partitions_0x1000_amp.dtsi>
+
+
+
+/ {
+  model = "My Custom ESP32";
+  compatible = "espressif,esp32";
+
+
+  chosen {
+    zephyr,console = &uart0;
+    zephyr,shell-uart = &uart0;
+    zephyr,uart-pipe = &uart0;
+  };
+};
+
+/* existing node first, then channels, then aliases */
+#include "adc0.channels.dtsi"
+#include "aliases.adc0.dtsi"

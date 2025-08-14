@@ -1,0 +1,8 @@
+/* aliases.adc0.dtsi */
+ / {
+   aliases {
+     my-adc0 = &adc0;
+     my-adc0-channel0 = &adc0_ch0;
+     my-adc0-channel1 = &adc0_ch1;
+   };
+ };

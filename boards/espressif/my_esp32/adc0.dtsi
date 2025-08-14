@@ -1,0 +1,8 @@
+/ {
+    adc0: adc {
+        compatible = "espressif,esp32-adc";
+        status = "okay";
+        #address-cells = <1>;
+        #size-cells = <0>;
+    };
+};
